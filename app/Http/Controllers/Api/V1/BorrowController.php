@@ -13,9 +13,10 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        return response()->json(['message' => 'List of borrows']);
+        $borrow = Borrow::all();
+        return response()->json($borrow);
 
-        return Borrow::all();
+       
     }
 
     /**
