@@ -52,7 +52,14 @@ class BorrowController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $borrow = Borrow::find($id);
+        $borrow->user_id = $request->user_id ?? $borrow-> user_id;
+        $borrow->start_at= $request->start_at?? $borrow-> start_at;
+        $borrow->end_date = $request->end_date ?? $borrow-> end_date;
+        $borrow->status = $request->status ?? $borrow-> status;
+        $borrow->quantity = $request->quantity ?? $borrow-> quantity;
+        $borrow->save();
+        return response()->json(['message'=>'Update borrow successfully'], 200);
     }
 
     /**

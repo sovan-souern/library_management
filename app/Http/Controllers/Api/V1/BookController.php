@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\returnSelf;
+
 class BookController extends Controller
 {
     /**
@@ -13,9 +15,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        // return response()->json(['message' => 'List of books']);
-        return response()->json(['message' => 'List of books']);
-        return Book::all();
+       $books = Book::all();
+       return response()->json($books);
     }
 
     /**
@@ -26,6 +27,7 @@ class BookController extends Controller
         $books = new Book();
         $books->name = $request->name;
         $books->description = $request->description;
+        $books->category_id = $request->category_id;
         $books->save();
         return response()->json($books, 201);
     }
@@ -35,7 +37,8 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $books = Book::find($id);
+        return response()->json($books);
     }
 
     /**
@@ -43,7 +46,12 @@ class BookController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $books = Book::find($id);
+        $books->name= $request->name ?? $books->name;
+        $books->description= $request->description ?? $books->description;
+        $books->category_id= $request->category_id ?? $books->category_id;
+        $books->save();
+        return response()->json(['message'=>'Update book succefully'], 200);
     }
 
     /**
@@ -51,6 +59,12 @@ class BookController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $books = Book::find($id);
+        if(!$books){
+            return response()->json(['message'=>'Not found book'], 404);
+
+        }
+        $books->delete();
+        return response()->json(['message'=>'Delete book successfully'], 200);
     }
 }
