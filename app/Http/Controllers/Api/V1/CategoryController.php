@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,7 +13,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category = Category::all();
+        return response()->json($category);
     }
 
     /**
@@ -20,7 +22,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category = new Category();
+        if(!$category){
+            return response()->json(['message'=>'Category not found', 404]);
+        }
+        $category->type = $request->type;
+        $category->description= $request->description;
+        $category->save();
+        return response()->json(['message'=>'Create cagtegory succcessfully !'], 404);
+
     }
 
     /**
@@ -28,7 +38,8 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = Category::find($id);
+        return response()->json($category);
     }
 
     /**
@@ -36,7 +47,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Category::find($id);
+        if(!$category){
+            return response()->json(['message'=>'Category not found !'], 404);
+        }
+        $category->type = $request->type ?? $category->type;
+        $category->description = $request->description ?? $category->description;
+        $category->duration = $request->duration ?? $category->duration;
+        $category->save();
+        return response()->json(['message'=> 'Update successfully !'], 404);
+
     }
 
     /**
@@ -44,6 +64,11 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::find($id);
+        if(!$category){
+            return response()->json(['message'=>'Category not found !'], 404);
+        }
+        $category->delete();
+        return response()->json(['message'=>'Delete category successfully !'], 404);
     }
 }
