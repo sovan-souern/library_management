@@ -42,10 +42,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-public function borrows()
-{
-    return $this->hasMany(\App\Models\Borrow::class);
-}
 
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
 
+    public function borrows()
+    {
+        return $this->hasMany(Borrow::class);
+    }
 }
