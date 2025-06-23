@@ -9,10 +9,18 @@ class Borrow extends Model
 {
     use HasFactory;
 
-    function books()
-    {
-        return $this->belongsToMany(Book::class, 'borrow_book')
-                    ->withPivot('duration')
-                    ->withTimestamps();
-    }
+
+public function books()
+{
+    return $this->belongsToMany(\App\Models\Book::class, 'borrow_book')
+                ->withPivot('quantity', 'return_date', 'status')
+                ->withTimestamps();
+}
+
+// In Borrow.php model
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }
