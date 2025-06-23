@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\BookController;
 use App\Http\Controllers\Api\V1\BorrowController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\MemberController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -27,5 +28,6 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('books', BookController::class);
     Route::apiResource('borrows', BorrowController::class);
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('members', MemberController::class);
 });
 Route::get('/users/with-books', [UserController::class, 'getUsersWithBorrowedBooks']);
