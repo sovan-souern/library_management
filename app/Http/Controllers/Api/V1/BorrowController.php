@@ -52,6 +52,21 @@ class BorrowController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $borrow = Borrow::find($id);
+
+        if (!$borrow) {
+            return response()->json(['message' => 'Borrow not found'], 404);
+        }
+
+        $borrow->update([
+            'user_id' => $request->user_id,
+            'start_at' => $request->start_at,
+            'end_date' => $request->end_date,
+            'status' => $request->status,
+            'quantity' => $request->quantity,
+        ]);
+
+        return response()->json($borrow);
         //
     }
 
