@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('borrow_book', function (Blueprint $table) {
             $table->id();
             $table->string('duration')->nullable();
+            $table->integer('quantity')->default(1);
             $table->timestamps();
+            $table->foreignId('borrow_id')->constrained()->onDelete('cascade');
+            $table->foreignId('book_id')->constrained()->onDelete('cascade');
         });
     }
 
