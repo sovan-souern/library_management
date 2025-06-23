@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('members', function (Blueprint $table) {
+         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->decimal('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('gender')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,3 +30,6 @@ return new class extends Migration
         Schema::dropIfExists('members');
     }
 };
+
+
+

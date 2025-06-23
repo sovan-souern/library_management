@@ -15,4 +15,12 @@ class Borrow extends Model
                     ->withPivot('duration')
                     ->withTimestamps();
     }
+     public function member()
+    {
+        return $this->belongsTo(Member::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class); 
+    }
 }
