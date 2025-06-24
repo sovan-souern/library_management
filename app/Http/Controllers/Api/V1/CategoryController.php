@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -42,18 +43,20 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryRequest $request, string $id)
     {
         $category = Category::find($id);
-        if(!$category){
-            return response()->json(['message'=>'Category not found !'], 404);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found!'], 404);
         }
+
         $category->type = $request->type ?? $category->type;
         $category->description = $request->description ?? $category->description;
         $category->duration = $request->duration ?? $category->duration;
         $category->save();
-        return response()->json(['message'=> 'Update successfully !'], 404);
 
+        return response()->json(['message' => 'Update successfully!'], 200);  
     }
 
     /**
@@ -62,10 +65,10 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $category = Category::find($id);
-        if(!$category){
-            return response()->json(['message'=>'Category not found !'], 404);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found !'], 404);
         }
         $category->delete();
-        return response()->json(['message'=>'Delete category successfully !'], 404);
+        return response()->json(['message' => 'Delete category successfully !'], 404);
     }
 }

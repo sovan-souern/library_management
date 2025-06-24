@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBorrowRequest;
 use App\Models\Borrow;
+use App\Http\Requests\UpdateBorrowRequest;
 use Illuminate\Http\Request;
 
 class BorrowController extends Controller
@@ -48,17 +49,20 @@ class BorrowController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $borrow = Borrow::find($id);
-        $borrow->user_id = $request->user_id ?? $borrow-> user_id;
-        $borrow->start_at= $request->start_at?? $borrow-> start_at;
-        $borrow->end_date = $request->end_date ?? $borrow-> end_date;
-        $borrow->status = $request->status ?? $borrow-> status;
-        $borrow->quantity = $request->quantity ?? $borrow-> quantity;
-        $borrow->save();
-        return response()->json(['message'=>'Update borrow successfully'], 200);
-    }
+    public function update(UpdateBorrowRequest $request, string $id)
+{
+    $borrow = Borrow::findOrFail($id);
+
+    $borrow->user_id = $request->user_id ?? $borrow->user_id;
+    $borrow->start_at = $request->start_at ?? $borrow->start_at;
+    $borrow->end_date = $request->end_date ?? $borrow->end_date;
+    $borrow->status = $request->status ?? $borrow->status;
+    $borrow->quantity = $request->quantity ?? $borrow->quantity;
+
+    $borrow->save();
+
+    return response()->json(['message' => 'Update borrow successfully'], 200);
+}
 
     /**
      * Remove the specified resource from storage.
@@ -73,6 +77,6 @@ class BorrowController extends Controller
 
         $borrow->delete();
         return response()->json(['message' => 'Borrow deleted successfully']);
-        //
+        
     }
 }

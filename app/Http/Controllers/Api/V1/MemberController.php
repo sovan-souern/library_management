@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMemberRequest;
+use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Category;
 use App\Models\Member;
 use Illuminate\Http\Request;
@@ -22,14 +23,14 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(StoreMemberRequest $request)
-{
-    $validatedData = $request->validated();
+    public function store(StoreMemberRequest $request)
+    {
+        $validatedData = $request->validated();
 
-    $member = Member::create($validatedData);
+        $member = Member::create($validatedData);
 
-    return response()->json(['message' => 'Create Member successfully!'], 201);
-}
+        return response()->json(['message' => 'Create Member successfully!'], 201);
+    }
 
 
     /**
@@ -44,17 +45,20 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateMemberRequest $request, string $id)
     {
         $member = Member::find($id);
+
         if (!$member) {
-            return response()->json(['message' => 'Not found member'], 404);
+            return response()->json(['message' => 'Member not found'], 404);
         }
+
         $member->name = $request->name ?? $member->name;
         $member->phone = $request->phone ?? $member->phone;
         $member->email = $request->email ?? $member->email;
         $member->gender = $request->gender ?? $member->gender;
         $member->book_id = $request->book_id ?? $member->book_id;
+
         $member->save();
 
         return response()->json(['message' => 'Update successfully'], 200);

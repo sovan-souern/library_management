@@ -12,8 +12,8 @@ class Book extends Model
     function borrows()
     {
         return $this->belongsToMany(Borrow::class, 'borrow_book')
-                    ->withPivot('duration')
-                    ->withTimestamps();
+            ->withPivot('duration')
+            ->withTimestamps();
     }
     public function category()
     {
@@ -21,12 +21,7 @@ class Book extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class); 
+        return $this->belongsTo(User::class);
     }
-    protected $fillable = [
-    'name',
-    'description',
-    'category_id',
-];
-
+    protected $fillable = ['name', 'description', 'category_id'];
 }
