@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,7 +23,6 @@ class User extends Authenticatable
         'email',
     ];
 
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,6 +43,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // Relations
     public function books()
     {
         return $this->hasMany(Book::class);
@@ -53,5 +52,29 @@ class User extends Authenticatable
     public function borrows()
     {
         return $this->hasMany(Borrow::class);
+    }
+
+    // Accessor: full name combining first and last
+    public function getFullNameAttribute()
+    {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
+
+    // Accessor: capitalize gender on access
+    public function getGenderAttribute($value)
+    {
+        return ucfirst(strtolower($value));
+    }
+
+    // Mutator: clean first name before saving
+    public function setFirstNameAttribute($value)
+    {
+        $this->attributes['first_name'] = ucfirst(strtolower($value));
+    }
+
+    // Mutator: clean last name before saving
+    public function setLastNameAttribute($value)
+    {
+        $this->attributes['last_name'] = ucfirst(strtolower($value));
     }
 }
