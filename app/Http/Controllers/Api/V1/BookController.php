@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBookRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -15,23 +16,21 @@ class BookController extends Controller
      */
     public function index()
     {
-       $books = Book::all();
-       return response()->json($books);
+        $books = Book::all();
+        return response()->json($books);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBookRequest $request)
     {
-        $books = new Book();
-        $books->name = $request->name;
-        $books->description = $request->description;
-        $books->category_id = $request->category_id;
-        $books->save();
-        return response()->json($books, 201);
-    }
+        $validated = $request->validated();
 
+        $book = Book::create($validated);
+
+        return response()->json($book, 201);
+    }
     /**
      * Display the specified resource.
      */
@@ -47,11 +46,11 @@ class BookController extends Controller
     public function update(Request $request, string $id)
     {
         $books = Book::find($id);
-        $books->name= $request->name ?? $books->name;
-        $books->description= $request->description ?? $books->description;
-        $books->category_id= $request->category_id ?? $books->category_id;
+        $books->name = $request->name ?? $books->name;
+        $books->description = $request->description ?? $books->description;
+        $books->category_id = $request->category_id ?? $books->category_id;
         $books->save();
-        return response()->json(['message'=>'Update book succefully'], 200);
+        return response()->json(['message' => 'Update book succefully'], 200);
     }
 
     /**
@@ -60,11 +59,10 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         $books = Book::find($id);
-        if(!$books){
-            return response()->json(['message'=>'Not found book'], 404);
-
+        if (!$books) {
+            return response()->json(['message' => 'Not found book'], 404);
         }
         $books->delete();
-        return response()->json(['message'=>'Delete book successfully'], 200);
+        return response()->json(['message' => 'Delete book successfully'], 200);
     }
 }

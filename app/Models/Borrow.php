@@ -23,4 +23,12 @@ class Borrow extends Model
     {
         return $this->belongsTo(User::class); 
     }
+    protected $fillable = [
+    'user_id',
+    'start_at',
+    'end_date',
+    'status',
+    'quantity',
+];
+
 }

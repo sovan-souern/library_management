@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBorrowRequest;
 use App\Models\Borrow;
 use Illuminate\Http\Request;
 
@@ -22,17 +23,13 @@ class BorrowController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+   public function store(StoreBorrowRequest $request)
     {
-        $borrow = new Borrow();
-        $borrow->user_id = $request->user_id;
-        $borrow->start_at = $request->start_at;
-        $borrow->end_date = $request->end_date;
-        $borrow->status = $request->status;
-        $borrow->quantity = $request->quantity;
-        $borrow->save();
+        $validated = $request->validated();
+
+        $borrow = Borrow::create($validated);
+
         return response()->json($borrow, 201);
-        //
     }
 
     /**

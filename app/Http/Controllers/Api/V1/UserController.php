@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Requests\StoreUserRequest;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,17 +21,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $users = new User();
-        $users->first_name = $request->first_name;
-        $users->last_name = $request->last_name;
-        $users->gender = $request->gender;
-        $users->email = $request->email;
-        $users->save();
+        $validatedData = $request->validated();
 
-        return response()->json($users, 201);
+        $user = User::create($validatedData);
+
+        return response()->json($user, 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -48,21 +48,24 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $users = User::find($id);
+        $user = User::find($id);
 
-        if (!$users) {
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $users->update([
-            'first_name' => $request->first_name, // ✅ fixed typo here
-            'last_name'  => $request->last_name,
-            'gender'     => $request->gender,
-            'email'      => $request->email,
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'gender'     => 'required|in:male,female,other',
+            'email'      => 'required|email|unique:users,email,' . $id,
         ]);
 
-        return response()->json($users, 200);
+        $user->update($validatedData);
+
+        return response()->json($user, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.

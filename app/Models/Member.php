@@ -12,4 +12,12 @@ class Member extends Model
     {
         return $this->hasMany(Borrow::class);
     }
+    protected $fillable = [
+    'name',
+    'phone',
+    'email',
+    'gender',
+    'book_id',
+];
+
 }

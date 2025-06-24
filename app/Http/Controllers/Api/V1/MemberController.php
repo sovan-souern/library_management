@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMemberRequest;
 use App\Models\Category;
 use App\Models\Member;
 use Illuminate\Http\Request;
@@ -21,18 +22,14 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $member = new Member();
-        $member->name = $request->name;
-        $member->phone = $request->phone;
-        $member->email = $request->email;
-        $member->gender = $request->gender;
-        $member->user_id = $request->user_id;
-        $member->save();
+   public function store(StoreMemberRequest $request)
+{
+    $validatedData = $request->validated();
 
-        return response()->json(['message' => 'Create Member successfully!'], 201);
-    }
+    $member = Member::create($validatedData);
+
+    return response()->json(['message' => 'Create Member successfully!'], 201);
+}
 
 
     /**
@@ -57,7 +54,7 @@ class MemberController extends Controller
         $member->phone = $request->phone ?? $member->phone;
         $member->email = $request->email ?? $member->email;
         $member->gender = $request->gender ?? $member->gender;
-        $member->user_id = $request->user_id ?? $member->user_id;
+        $member->book_id = $request->book_id ?? $member->book_id;
         $member->save();
 
         return response()->json(['message' => 'Update successfully'], 200);
