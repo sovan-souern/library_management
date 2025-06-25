@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Requests\StoreUserRequest;
-
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the users.
      */
     public function index()
     {
-        return User::all();
+        return response()->json(User::all(), 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created user.
      */
     public function store(StoreUserRequest $request)
     {
         $validatedData = $request->validated();
-
         $user = User::create($validatedData);
 
         return response()->json($user, 201);
     }
 
-
     /**
-     * Display the specified resource.
+     * Display the specified user.
      */
     public function show(string $id)
     {
-        $users = User::find($id);
-        if (!$users) {
+        $user = User::find($id);
+
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        return response()->json($users);
+
+        return response()->json($user, 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified user.
      */
     public function update(Request $request, string $id)
     {
@@ -54,31 +54,38 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'gender'     => 'required|in:male,female,other',
-            'email'      => 'required|email|unique:users,email,' . $id,
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'first_name' => 'sometimes|required|string|max:255',
+                'last_name'  => 'sometimes|required|string|max:255',
+                'gender'     => 'sometimes|required|in:male,female,other',
+                'email'      => 'sometimes|required|email|unique:users,email,' . $id,
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'validation_error',
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         $user->update($validatedData);
 
         return response()->json($user, 200);
     }
 
-
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user.
      */
     public function destroy(string $id)
     {
-        $users = User::find($id);
+        $user = User::find($id);
 
-        if (!$users) {
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $users->delete();
+        $user->delete();
+
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
 
@@ -91,7 +98,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $users
+            'data'   => $users,
         ], 200);
     }
 }
